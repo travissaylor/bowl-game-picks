@@ -9,6 +9,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { createInsertSchema } from "drizzle-zod";
+
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -17,24 +19,50 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const mysqlTable = mysqlTableCreator((name) => `bowl-game-picks-23-24_${name}`);
-
-export const posts = mysqlTable(
-  "post",
-  {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("createdById", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
-  },
-  (example) => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  })
+export const mysqlTable = mysqlTableCreator(
+  (name) => `bowl-game-picks-23-24_${name}`,
 );
+
+export const games = mysqlTable("game", {
+  id: int("id").notNull().primaryKey(),
+  date: timestamp("date", { mode: "date" }).notNull(),
+  awayTeam: varchar("awayTeam", { length: 255 }).notNull(),
+  homeTeam: varchar("homeTeam", { length: 255 }).notNull(),
+  startTime: timestamp("startTime", { mode: "date" }).notNull(),
+  spread: varchar("spread", { length: 255 }).notNull(),
+  total: varchar("total", { length: 255 }).notNull(),
+  awayScore: int("awayScore"),
+  homeScore: int("homeScore"),
+  status: varchar("status", { length: 255 }).notNull(),
+  winner: varchar("winner", { length: 255 }),
+});
+
+export const createGameSchema = createInsertSchema(games);
+
+export const gamesRelations = relations(games, ({ many }) => ({
+  picks: many(picks),
+}));
+
+export const picks = mysqlTable(
+  "pick",
+  {
+    id: int("id").notNull().primaryKey(),
+    userId: varchar("userId", { length: 255 }).notNull(),
+    gameId: int("gameId").notNull(),
+    pick: varchar("pick", { length: 255 }).notNull(),
+    awayScore: int("awayScore"),
+    homeScore: int("homeScore"),
+  },
+  (pick) => ({
+    userIdIdx: index("userId_idx").on(pick.userId),
+    gameIdIdx: index("gameId_idx").on(pick.gameId),
+  }),
+);
+
+export const picksRelations = relations(picks, ({ one }) => ({
+  user: one(users, { fields: [picks.userId], references: [users.id] }),
+  game: one(games, { fields: [picks.gameId], references: [games.id] }),
+}));
 
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
@@ -50,6 +78,7 @@ export const users = mysqlTable("user", {
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   sessions: many(sessions),
+  picks: many(picks),
 }));
 
 export const accounts = mysqlTable(
@@ -72,7 +101,7 @@ export const accounts = mysqlTable(
   (account) => ({
     compoundKey: primaryKey(account.provider, account.providerAccountId),
     userIdIdx: index("userId_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -90,7 +119,7 @@ export const sessions = mysqlTable(
   },
   (session) => ({
     userIdIdx: index("userId_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -106,5 +135,5 @@ export const verificationTokens = mysqlTable(
   },
   (vt) => ({
     compoundKey: primaryKey(vt.identifier, vt.token),
-  })
+  }),
 );
