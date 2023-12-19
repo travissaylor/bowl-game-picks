@@ -12,6 +12,7 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 
 import { type AdapterAccount } from "next-auth/adapters";
+import { z } from "zod";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -26,7 +27,7 @@ export const mysqlTable = mysqlTableCreator(
 export const games = mysqlTable("game", {
   id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
-  date: timestamp("date", { mode: "string" }).notNull(),
+  date: timestamp("date", { mode: "date" }).notNull(),
   awayTeam: varchar("awayTeam", { length: 255 }).notNull(),
   homeTeam: varchar("homeTeam", { length: 255 }).notNull(),
   status: mysqlEnum("status", ["scheduled", "in_progress", "final"]).notNull(),
@@ -34,7 +35,11 @@ export const games = mysqlTable("game", {
   homeScore: int("homeScore"),
 });
 
-export const createGameSchema = createInsertSchema(games);
+const baseCreateGameSchema = createInsertSchema(games);
+export const createGameSchema = baseCreateGameSchema.extend({
+  awayScore: z.coerce.number().optional(),
+  homeScore: z.coerce.number().optional(),
+});
 export type CreateGameSchema = Zod.infer<typeof createGameSchema>;
 
 export const gamesRelations = relations(games, ({ many }) => ({

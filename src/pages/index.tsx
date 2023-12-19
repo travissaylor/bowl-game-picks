@@ -1,8 +1,14 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "~/components/ui/card";
 
 import { api } from "~/utils/api";
+import { formatDate } from "~/utils/ui";
 
 export default function Home() {
   const gamesQuery = api.game.getAll.useQuery();
@@ -17,7 +23,7 @@ export default function Home() {
         <meta name="description" content="College Football Picks" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <main>
         <div>
           <h1 className="text-center text-6xl font-bold text-white">
             College Football Picks
@@ -27,20 +33,20 @@ export default function Home() {
           </p>
         </div>
         {gamesQuery.data.map((game) => (
-          <div
-            key={game.id}
-            className="flex flex-col items-center justify-center gap-4"
-          >
-            <Link
-              href={`/games/${game.id}`}
-              className="text-center text-2xl text-white"
-            >
-              {game.awayTeam} @ {game.homeTeam}
-            </Link>
-            <p className="text-center text-2xl text-white">
-              {game.awayScore} - {game.homeScore}
-            </p>
-          </div>
+          <Card key={game.id} className="w-[350px]">
+            <CardHeader>{game.name}</CardHeader>
+            <CardDescription>{formatDate(game.date, "PPP")}</CardDescription>
+            <CardContent>
+              <p>
+                {game.awayTeam} vs. {game.homeTeam}
+              </p>
+              {game.awayScore && game.homeScore ? (
+                <p>
+                  {game.awayScore} - {game.homeScore}
+                </p>
+              ) : null}
+            </CardContent>
+          </Card>
         ))}
       </main>
     </>
