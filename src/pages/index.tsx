@@ -19,21 +19,25 @@ export default function Home() {
       </Head>
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div>
-          <h1 className="text-6xl font-bold text-white text-center">
+          <h1 className="text-center text-6xl font-bold text-white">
             College Football Picks
           </h1>
-          <p className="text-2xl text-white text-center">
+          <p className="text-center text-2xl text-white">
             Make your picks for bowl season
           </p>
         </div>
         {gamesQuery.data.map((game) => (
-          <div key={game.id} className="flex flex-col items-center justify-center gap-4">
-            <Link href={`/games/${game.id}`}>
-              <a className="text-2xl text-white text-center">
-                {game.awayTeam} @ {game.homeTeam}
-              </a>
+          <div
+            key={game.id}
+            className="flex flex-col items-center justify-center gap-4"
+          >
+            <Link
+              href={`/games/${game.id}`}
+              className="text-center text-2xl text-white"
+            >
+              {game.awayTeam} @ {game.homeTeam}
             </Link>
-            <p className="text-2xl text-white text-center">
+            <p className="text-center text-2xl text-white">
               {game.awayScore} - {game.homeScore}
             </p>
           </div>

@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   index,
   int,
+  mysqlEnum,
   mysqlTableCreator,
   primaryKey,
   text,
@@ -23,20 +24,18 @@ export const mysqlTable = mysqlTableCreator(
 );
 
 export const games = mysqlTable("game", {
-  id: int("id").notNull().primaryKey(),
-  date: timestamp("date", { mode: "date" }).notNull(),
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull(),
+  date: timestamp("date", { mode: "string" }).notNull(),
   awayTeam: varchar("awayTeam", { length: 255 }).notNull(),
   homeTeam: varchar("homeTeam", { length: 255 }).notNull(),
-  startTime: timestamp("startTime", { mode: "date" }).notNull(),
-  spread: varchar("spread", { length: 255 }).notNull(),
-  total: varchar("total", { length: 255 }).notNull(),
+  status: mysqlEnum("status", ["scheduled", "in_progress", "final"]).notNull(),
   awayScore: int("awayScore"),
   homeScore: int("homeScore"),
-  status: varchar("status", { length: 255 }).notNull(),
-  winner: varchar("winner", { length: 255 }),
 });
 
 export const createGameSchema = createInsertSchema(games);
+export type CreateGameSchema = Zod.infer<typeof createGameSchema>;
 
 export const gamesRelations = relations(games, ({ many }) => ({
   picks: many(picks),
