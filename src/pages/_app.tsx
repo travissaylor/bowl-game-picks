@@ -6,6 +6,8 @@ import { Inter } from "next/font/google";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import { cn } from "~/utils/ui";
+import { Nav } from "~/components/orchestrated/nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +17,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <main className={inter.className}>
+      <main className={cn(inter.className)}>
+        <Nav />
         <Component {...pageProps} />
       </main>
     </SessionProvider>
