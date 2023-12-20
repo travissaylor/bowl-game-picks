@@ -29,6 +29,7 @@ import {
   CreatePickSchema,
 } from "~/server/db/schema";
 import { api } from "~/utils/api";
+import { formatDate } from "~/utils/ui";
 
 const formSchema = z.object({
   picks: z.array(
@@ -136,10 +137,13 @@ export default function Picks() {
                   <div key={index} className="my-3 w-[400px]">
                     <div className="m-auto flex flex-col items-center justify-center">
                       <div className="flex flex-col items-center justify-center">
-                        <p className="text-sm font-medium leading-none py-2">
-                          {game.awayTeam} vs. {game.homeTeam}
+                        <h3 className="text-lg font-medium leading-none">
+                          {game.name}
+                        </h3>
+                        <p className="text-muted-foreground text-sm py-2">
+                          {formatDate(game.date, "PPP")}
                         </p>
-                        <FormItem className="flex justify-center items-center">
+                        <FormItem className="flex items-center justify-center">
                           <Select
                             {...form.register(`picks.${index}.pick`)}
                             value={field.pick}

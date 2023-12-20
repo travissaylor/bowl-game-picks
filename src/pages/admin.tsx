@@ -47,20 +47,10 @@ export default function Admin() {
   if (status === "unauthenticated") {
     return <Unauthenticated />;
   }
-  
-  <main className="flex flex-col justify-center">
-    <PageHeader
-      title="Please Login First"
-      description="You must be logged in to make picks"
-    >
-      <Button onClick={() => void signIn()}>Sign in</Button>
-    </PageHeader>
-  </main>;
+
   return (
     <div className="flex flex-col content-center justify-center pt-8">
-      <h1 className="m-auto flex scroll-m-20 pb-4 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Admin
-      </h1>
+      <PageHeader title="Admin" description="Add bowl games" />
       <Form {...form}>
         <form
           onSubmit={onSubmit}
@@ -85,7 +75,7 @@ export default function Admin() {
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Date of birth</FormLabel>
+                <FormLabel>Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -179,7 +169,7 @@ export default function Admin() {
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}

@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -13,16 +14,16 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { cn } from "~/utils/ui";
 
-export const UserNav = () => {
-  const { data: sessionData } = useSession();
+export interface SessionNavProps {
+  session: Session | null;
+}
 
-  if (!sessionData) {
+export const UserNav = ({ session }: SessionNavProps) => {
+  if (!session) {
     return (
       <nav className="flex h-16 items-center px-4">
-        <Button
-          onClick={sessionData ? () => void signOut() : () => void signIn()}
-        >
-          {sessionData ? "Sign out" : "Sign in"}
+        <Button onClick={session ? () => void signOut() : () => void signIn()}>
+          {session ? "Sign out" : "Sign in"}
         </Button>
       </nav>
     );
@@ -34,12 +35,12 @@ export const UserNav = () => {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={sessionData.user.image ?? undefined}
-              alt={sessionData.user.name ?? undefined}
-              title={sessionData.user.name ?? undefined}
+              src={session.user.image ?? undefined}
+              alt={session.user.name ?? undefined}
+              title={session.user.name ?? undefined}
             />
             <AvatarFallback>
-              {sessionData.user.name?.charAt(0) ?? "?"}
+              {session.user.name?.charAt(0) ?? "?"}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -48,10 +49,10 @@ export const UserNav = () => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {sessionData.user.name}
+              {session.user.name}
             </p>
             <p className="text-muted-foreground text-xs leading-none">
-              {sessionData.user.email}
+              {session.user.email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -69,9 +70,10 @@ export const UserNav = () => {
 };
 
 export function MainNav({
+  session,
   className,
   ...props
-}: React.HTMLAttributes<HTMLElement>) {
+}: React.HTMLAttributes<HTMLElement> & SessionNavProps) {
   return (
     <div
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
@@ -89,16 +91,26 @@ export function MainNav({
       >
         Picks
       </Link>
+      {session?.user.email === "travis.saylor@gmail.com" && (
+        <Link
+          href="/admin"
+          className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
+        >
+          Admin
+        </Link>
+      )}
     </div>
   );
 }
 
 export const Nav = () => {
+  const { data: sessionData } = useSession();
+
   return (
     <nav className="flex h-16 items-center px-4">
-      <UserNav />
+      <UserNav session={sessionData} />
       <div className="ml-auto flex items-center space-x-4">
-        <MainNav />
+        <MainNav session={sessionData} />
       </div>
     </nav>
   );
