@@ -67,14 +67,14 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>College Football Picks</title>
-        <meta name="description" content="College Football Picks" />
+        <title>Bowl Game Pick Results</title>
+        <meta name="description" content="See the updated scores for the bowl games and your picks." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col justify-center">
         <PageHeader
-          title="College Football Picks"
-          description="Make your picks for bowl season"
+          title="Bowl Game Pick Results"
+          description="See the updated scores for the bowl games and your picks."
         />
         <div className="m-auto flex flex-col items-center justify-center p-4">
           {gamesQuery.data.map((game) => {

@@ -136,11 +136,10 @@ export default function Picks() {
                   <div key={index} className="my-3 w-[400px]">
                     <div className="m-auto flex flex-col items-center justify-center">
                       <div className="flex flex-col items-center justify-center">
-                        <p className="text-sm font-medium leading-none">
+                        <p className="text-sm font-medium leading-none py-2">
                           {game.awayTeam} vs. {game.homeTeam}
                         </p>
-                        <FormItem>
-                          <FormLabel>Pick</FormLabel>
+                        <FormItem className="flex justify-center items-center">
                           <Select
                             {...form.register(`picks.${index}.pick`)}
                             value={field.pick}
