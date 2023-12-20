@@ -1,5 +1,7 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
+import { PageHeader } from "~/components/orchestrated/page-header";
+import { Unauthenticated } from "~/components/orchestrated/unauthenticated";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -14,25 +16,11 @@ import { formatDate } from "~/utils/ui";
 
 export default function Home() {
   const gamesQuery = api.game.getAll.useQuery();
-  const { status, data: sessionData } = useSession();
+  const { status } = useSession();
 
   if (status === "unauthenticated") {
     return (
-      <main className="flex flex-col justify-center">
-        <div className="m-auto flex flex-col items-center justify-center p-4">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl py-2">
-            Please Login First
-          </h1>
-          <p className="text-muted-foreground text-xl pb-2">
-            You must be logged in to make picks
-          </p>
-          <Button
-            onClick={sessionData ? () => void signOut() : () => void signIn()}
-          >
-            {sessionData ? "Sign out" : "Sign in"}
-          </Button>
-        </div>
-      </main>
+      <Unauthenticated />
     );
   }
 
@@ -47,14 +35,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col justify-center">
-        <div className="m-auto flex flex-col items-center justify-center p-4">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl py-2">
-            College Football Picks
-          </h1>
-          <p className="text-muted-foreground text-xl">
-            Make your picks for bowl season
-          </p>
-        </div>
+        <PageHeader
+          title="College Football Picks"
+          description="Make your picks for bowl season"
+        />
         <div className="m-auto flex flex-col items-center justify-center p-4">
           {gamesQuery.data.map((game) => (
             <Card key={game.id} className="my-3 w-[400px]">

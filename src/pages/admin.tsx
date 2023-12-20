@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { type CreateGameSchema, createGameSchema } from "~/server/db/schema";
 import { api } from "~/utils/api";
@@ -28,6 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { PageHeader } from "~/components/orchestrated/page-header";
+import { Unauthenticated } from "~/components/orchestrated/unauthenticated";
 
 export default function Admin() {
   const { status } = useSession();
@@ -36,21 +38,27 @@ export default function Admin() {
     resolver: zodResolver(createGameSchema),
   });
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = form;
+  const { handleSubmit } = form;
 
   const onSubmit = handleSubmit(async (data) => {
     await mutateAsync(data);
   });
+
   if (status === "unauthenticated") {
-    return <div>Access Denied</div>;
+    return <Unauthenticated />;
   }
+  
+  <main className="flex flex-col justify-center">
+    <PageHeader
+      title="Please Login First"
+      description="You must be logged in to make picks"
+    >
+      <Button onClick={() => void signIn()}>Sign in</Button>
+    </PageHeader>
+  </main>;
   return (
     <div className="flex flex-col content-center justify-center pt-8">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl flex m-auto pb-4">
+      <h1 className="m-auto flex scroll-m-20 pb-4 text-4xl font-extrabold tracking-tight lg:text-5xl">
         Admin
       </h1>
       <Form {...form}>
