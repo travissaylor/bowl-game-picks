@@ -49,10 +49,10 @@ export const gamesRelations = relations(games, ({ many }) => ({
 export const picks = mysqlTable(
   "pick",
   {
-    id: int("id").notNull().primaryKey(),
+    id: int("id").primaryKey().autoincrement(),
     userId: varchar("userId", { length: 255 }).notNull(),
     gameId: int("gameId").notNull(),
-    pick: varchar("pick", { length: 255 }).notNull(),
+    pick: mysqlEnum("pick", ["away", "home"]).notNull(),
     awayScore: int("awayScore"),
     homeScore: int("homeScore"),
   },
@@ -61,6 +61,16 @@ export const picks = mysqlTable(
     gameIdIdx: index("gameId_idx").on(pick.gameId),
   }),
 );
+
+const baseCreatePickSchema = createInsertSchema(picks);
+export const createPickSchema = baseCreatePickSchema.extend({
+  awayScore: z.coerce.number().optional(),
+  homeScore: z.coerce.number().optional(),
+});
+export type CreatePickSchema = Zod.infer<typeof createPickSchema>;
+
+export const batchCreatePickSchema = z.array(createPickSchema);
+export type BatchCreatePickSchema = Zod.infer<typeof batchCreatePickSchema>;
 
 export const picksRelations = relations(picks, ({ one }) => ({
   user: one(users, { fields: [picks.userId], references: [users.id] }),

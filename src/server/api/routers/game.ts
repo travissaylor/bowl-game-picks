@@ -19,7 +19,7 @@ export const gameRouter = createTRPCRouter({
         where: (game) => eq(game.id, input.id),
       });
     }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(createGameSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(games).values(input);
