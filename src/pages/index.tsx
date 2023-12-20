@@ -1,8 +1,7 @@
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { PageHeader } from "~/components/orchestrated/page-header";
 import { Unauthenticated } from "~/components/orchestrated/unauthenticated";
-import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,

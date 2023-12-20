@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { PageHeader } from "~/components/orchestrated/page-header";
@@ -10,9 +10,7 @@ import { Button } from "~/components/ui/button";
 import {
   Form,
   FormControl,
-  FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "~/components/ui/form";
 import {
@@ -23,10 +21,8 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import {
-  type BatchCreatePickSchema,
-  batchCreatePickSchema,
   createPickSchema,
-  CreatePickSchema,
+  type CreatePickSchema,
 } from "~/server/db/schema";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/ui";

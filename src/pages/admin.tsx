@@ -1,4 +1,4 @@
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { type CreateGameSchema, createGameSchema } from "~/server/db/schema";
 import { api } from "~/utils/api";
