@@ -7,12 +7,7 @@ import { z } from "zod";
 import { PageHeader } from "~/components/orchestrated/page-header";
 import { Unauthenticated } from "~/components/orchestrated/unauthenticated";
 import { Button } from "~/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormItem,
-  FormMessage,
-} from "~/components/ui/form";
+import { Form, FormControl, FormItem, FormMessage } from "~/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -20,10 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  createPickSchema,
-  type CreatePickSchema,
-} from "~/server/db/schema";
+import { createPickSchema, type CreatePickSchema } from "~/server/db/schema";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/ui";
 
@@ -40,10 +32,17 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function Picks() {
-  const gamesQuery = api.game.getAll.useQuery();
-  const picksQuery = api.pick.getAll.useQuery();
-  const picksMutation = api.pick.batchCreate.useMutation();
   const { status, data: sessionData } = useSession();
+  const gamesQuery = api.game.getAll.useQuery();
+  const picksQuery = api.pick.getByUserId.useQuery(
+    {
+      userId: sessionData?.user.id ?? "",
+    },
+    {
+      enabled: !!sessionData?.user.id,
+    },
+  );
+  const picksMutation = api.pick.batchCreate.useMutation();
 
   const picks = useMemo(() => {
     if (!gamesQuery.data) {
@@ -70,8 +69,13 @@ export default function Picks() {
       picks,
     },
   });
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = form;
   const { fields, update } = useFieldArray({
-    control: form.control,
+    control: control,
     name: "picks",
   });
 
@@ -89,7 +93,7 @@ export default function Picks() {
   )
     return <div>Error</div>;
 
-  const onSubmit = form.handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     console.log(data);
     if (!sessionData?.user.id) {
       console.error("No user id");
@@ -136,7 +140,7 @@ export default function Picks() {
                         <h3 className="text-lg font-medium leading-none">
                           {game.name}
                         </h3>
-                        <p className="text-muted-foreground text-sm py-2">
+                        <p className="text-muted-foreground py-2 text-sm">
                           {formatDate(game.date, "PPP")}
                         </p>
                         <FormItem className="flex items-center justify-center">
@@ -171,7 +175,14 @@ export default function Picks() {
                   </div>
                 );
               })}
-              <Button type="submit">Submit</Button>
+              <Button
+                variant={isSubmitting ? "outline" : "default"}
+                size={"default"}
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "..." : "Submit"}
+              </Button>
             </form>
           </Form>
         </div>
