@@ -109,9 +109,11 @@ export const Nav = () => {
   return (
     <nav className="flex h-16 items-center px-4">
       <UserNav session={sessionData} />
-      <div className="ml-auto flex items-center space-x-4">
-        <MainNav session={sessionData} />
-      </div>
+      {sessionData && (
+        <div className="ml-auto flex items-center space-x-4">
+          <MainNav session={sessionData} />
+        </div>
+      )}
     </nav>
   );
 };
