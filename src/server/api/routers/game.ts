@@ -6,7 +6,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { createGameSchema, games } from "~/server/db/schema";
+import { createGameSchema, games, updateGameSchema } from "~/server/db/schema";
 
 export const gameRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -23,5 +23,11 @@ export const gameRouter = createTRPCRouter({
     .input(createGameSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(games).values(input);
+    }),
+  update: protectedProcedure
+    .input(updateGameSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
+      await ctx.db.update(games).set(rest).where(eq(games.id, id));
     }),
 });

@@ -93,7 +93,7 @@ export function MainNav({
       </Link>
       {session?.user.email === "travis.saylor@gmail.com" && (
         <Link
-          href="/admin"
+          href="/admin/games"
           className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
         >
           Admin

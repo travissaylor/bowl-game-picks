@@ -42,6 +42,11 @@ export const createGameSchema = baseCreateGameSchema.extend({
 });
 export type CreateGameSchema = Zod.infer<typeof createGameSchema>;
 
+export const updateGameSchema = createGameSchema.partial().extend({
+  id: z.number(),
+});
+export type UpdateGameSchema = Zod.infer<typeof updateGameSchema>;
+
 export const gamesRelations = relations(games, ({ many }) => ({
   picks: many(picks),
 }));
