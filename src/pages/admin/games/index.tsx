@@ -13,7 +13,7 @@ import {
 } from "~/components/ui/card";
 
 import { api } from "~/utils/api";
-import { formatDate } from "~/utils/ui";
+import { formatDate, isNullOrUndefined } from "~/utils/ui";
 
 export default function AdminGamesList() {
   const { status } = useSession();
@@ -55,8 +55,8 @@ export default function AdminGamesList() {
                       {game.awayTeam} vs. {game.homeTeam}
                     </p>
                     {game.status === "final" &&
-                    game.awayScore &&
-                    game.homeScore ? (
+                    !isNullOrUndefined(game.awayScore) &&
+                    !isNullOrUndefined(game.homeScore) ? (
                       <p className="text-md py-1 font-medium leading-none">
                         <span
                           className={
