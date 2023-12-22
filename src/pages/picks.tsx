@@ -97,7 +97,8 @@ export default function Picks() {
       console.error("No user id");
       return;
     }
-    const dataToSubmit = data.picks.filter((field) => field.pickId !== undefined);
+
+    const dataToSubmit = data.picks.filter((field) => field.pick !== undefined);
 
     const submittedPicks = dataToSubmit.map((field) => ({
       gameId: field.gameId,
