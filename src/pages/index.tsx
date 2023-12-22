@@ -60,22 +60,32 @@ export default function Home() {
     return record;
   }, [gamesQuery.data, picksQuery.data]);
 
+  const gamesData = useMemo(() => {
+    if (!gamesQuery.data) return [];
+
+      return gamesQuery.data.map((game) => {
+        const pick = picksQuery.data?.find((pick) => pick.gameId === game.id);
+
+        return {
+          ...game,
+          pick,
+        };
+      });
+  }, [gamesQuery.data, picksQuery.data]);
+
   if (status === "unauthenticated") {
     return <Unauthenticated />;
   }
 
-  if (gamesQuery.isLoading) return <div>Loading...</div>;
   if (
     gamesQuery.isError ||
-    picksQuery.isError ||
-    !gamesQuery.data ||
-    !picksQuery.data
+    picksQuery.isError
   )
     return <div>Error</div>;
 
   const cardColor = (
-    game: (typeof gamesQuery)["data"][number],
-    pick: (typeof picksQuery)["data"][number] | undefined,
+    game: typeof gamesData[number],
+    pick: typeof gamesData[number]["pick"],
   ) => {
     if (!pick) return "bg-gray-100 dark:bg-gray-800";
 
@@ -122,10 +132,8 @@ export default function Home() {
           </h3>
         </div>
         <div className="m-auto flex flex-col items-center justify-center p-4">
-          {gamesQuery.data.map((game) => {
-            const pick = picksQuery.data?.find(
-              (pick) => pick.gameId === game.id,
-            );
+          {gamesData.map((game) => {
+            const pick = game.pick;
 
             return (
               <Card

@@ -15,7 +15,7 @@ import {
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/ui";
 
-export default function Home() {
+export default function AdminGamesList() {
   const { status } = useSession();
   const gamesQuery = api.game.getAll.useQuery();
 
@@ -23,8 +23,7 @@ export default function Home() {
     return <Unauthenticated />;
   }
 
-  if (gamesQuery.isLoading) return <div>Loading...</div>;
-  if (gamesQuery.isError || !gamesQuery.data) return <div>Error</div>;
+  if (gamesQuery.isError) return <div>Error</div>;
 
   return (
     <>
@@ -41,7 +40,7 @@ export default function Home() {
           >
             + Create New Game
           </Link>
-          {gamesQuery.data.map((game) => {
+          {gamesQuery.data?.map((game) => {
             return (
               <Link href={`/admin/games/${game.id}`} key={game.id}>
                 <Card key={game.id} className={"my-3 w-[350px]"}>

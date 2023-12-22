@@ -39,7 +39,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { PageHeader } from "~/components/orchestrated/page-header";
 
-export default function Game({
+export default function AdminEditGame({
   game,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { status } = useSession();

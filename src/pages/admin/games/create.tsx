@@ -31,7 +31,7 @@ import {
 import { PageHeader } from "~/components/orchestrated/page-header";
 import { Unauthenticated } from "~/components/orchestrated/unauthenticated";
 
-export default function Admin() {
+export default function AdminCreateGame() {
   const { status } = useSession();
   const { mutateAsync } = api.game.create.useMutation();
   const form = useForm<CreateGameSchema>({
