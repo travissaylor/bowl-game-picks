@@ -53,7 +53,6 @@ export default function Picks() {
       if (!pick) {
         return {
           gameId: game.id,
-          pick: "away" as const,
         };
       }
       return {
@@ -66,6 +65,7 @@ export default function Picks() {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     values: {
+      // @ts-expect-error Want to have non selected picks be undefined but can't use default values
       picks,
     },
   });
@@ -94,16 +94,15 @@ export default function Picks() {
     return <div>Error</div>;
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     if (!sessionData?.user.id) {
       console.error("No user id");
       return;
     }
-    const submittedPicks = fields.map((feild) => ({
-      gameId: feild.gameId,
-      pick: feild.pick,
+    const submittedPicks = data.picks.map((field) => ({
+      gameId: field.gameId,
+      pick: field.pick,
       userId: sessionData?.user.id,
-      id: feild.pickId,
+      id: field.pickId,
     }));
     await picksMutation.mutateAsync(submittedPicks);
   });
