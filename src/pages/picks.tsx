@@ -133,7 +133,7 @@ export default function Picks() {
                   return <></>;
                 }
                 return (
-                  <div key={index} className="my-3 w-[400px]">
+                  <div key={index} className="my-3 w-[350px]">
                     <div className="m-auto flex flex-col items-center justify-center">
                       <div className="flex flex-col items-center justify-center">
                         <h3 className="text-lg font-medium leading-none">

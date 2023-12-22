@@ -130,7 +130,7 @@ export default function Home() {
             return (
               <Card
                 key={game.id}
-                className={cn(cardColor(game, pick), "my-3 w-[400px]")}
+                className={cn(cardColor(game, pick), "my-3 w-[350px]")}
               >
                 <CardHeader className="m-auto flex flex-col items-center justify-center">
                   <CardTitle>{game.name}</CardTitle>

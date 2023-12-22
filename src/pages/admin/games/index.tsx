@@ -44,7 +44,7 @@ export default function Home() {
           {gamesQuery.data.map((game) => {
             return (
               <Link href={`/admin/games/${game.id}`} key={game.id}>
-                <Card key={game.id} className={"my-3 w-[400px]"}>
+                <Card key={game.id} className={"my-3 w-[350px]"}>
                   <CardHeader className="m-auto flex flex-col items-center justify-center">
                     <CardTitle>{game.name}</CardTitle>
                     <CardDescription>

@@ -87,7 +87,7 @@ export default function Leaderboard() {
       <div className="m-auto flex flex-col items-center justify-center p-4">
         {sortedUsersByRecord.map((user, index) => {
           return (
-            <Card key={user.id} className={cn("my-3 w-[400px]")}>
+            <Card key={user.id} className={cn("my-3 w-[350px]")}>
               <CardHeader className="m-auto flex flex-col items-center justify-center">
                 <CardTitle>
                   {index + 1}. {user.name}
@@ -95,9 +95,9 @@ export default function Leaderboard() {
                 <CardDescription>{user.email}</CardDescription>
               </CardHeader>
               <CardContent className="m-auto flex flex-col items-center justify-center">
-                <p className="text-md py-1 font-medium leading-none">
+                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                   {user.record.wins} - {user.record.losses}
-                </p>
+                </h1>
               </CardContent>
             </Card>
           );
