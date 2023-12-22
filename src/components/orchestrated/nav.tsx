@@ -91,6 +91,12 @@ export function MainNav({
       >
         Picks
       </Link>
+      <Link
+        href="/leaderboard"
+        className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
+      >
+        Leaderboard
+      </Link>
       {session?.user.email === "travis.saylor@gmail.com" && (
         <Link
           href="/admin/games"
