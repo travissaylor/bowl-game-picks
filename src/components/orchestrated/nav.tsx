@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { cn } from "~/utils/ui";
+import { ModeToggle } from "./mode-toggle";
 
 export interface SessionNavProps {
   session: Session | null;
@@ -115,6 +116,9 @@ export const Nav = () => {
   return (
     <nav className="flex h-16 items-center px-4">
       <UserNav session={sessionData} />
+      <div className="mx-2">
+        <ModeToggle />
+      </div>
       {sessionData && (
         <div className="ml-auto flex items-center space-x-4">
           <MainNav session={sessionData} />

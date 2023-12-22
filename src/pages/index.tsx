@@ -77,10 +77,10 @@ export default function Home() {
     game: (typeof gamesQuery)["data"][number],
     pick: (typeof picksQuery)["data"][number] | undefined,
   ) => {
-    if (!pick) return "bg-gray-100";
+    if (!pick) return "bg-gray-100 dark:bg-gray-800";
 
     if (game.status === "in_progress") {
-      return "bg-yellow-100";
+      return "bg-yellow-100 dark:bg-yellow-800";
     }
 
     if (
@@ -88,17 +88,17 @@ export default function Home() {
       !isNullOrUndefined(game.homeScore)
     ) {
       if (pick.pick === "away" && game.awayScore > game.homeScore) {
-        return "bg-green-100";
+        return "bg-green-100 dark:bg-green-800";
       }
 
       if (pick.pick === "home" && game.homeScore > game.awayScore) {
-        return "bg-green-100";
+        return "bg-green-100 dark:bg-green-800";
       }
 
-      return "bg-red-100";
+      return "bg-red-100 dark:bg-red-800";
     }
 
-    return "bg-gray-100";
+    return "bg-gray-100 dark:bg-gray-800";
   };
 
   return (

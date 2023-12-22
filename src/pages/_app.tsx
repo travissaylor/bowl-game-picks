@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { cn } from "~/utils/ui";
 import { Nav } from "~/components/orchestrated/nav";
+import { ThemeProvider } from "~/components/orchestrated/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <main className={cn(inter.className)}>
-        <Nav />
-        <Component {...pageProps} />
-      </main>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <main className={cn(inter.className)}>
+          <Nav />
+          <Component {...pageProps} />
+        </main>
+      </ThemeProvider>
     </SessionProvider>
   );
 };
