@@ -12,6 +12,19 @@ export const pickRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.db.query.picks.findMany();
   }),
+  getAllGroupedByUserId: publicProcedure.query( async ({ ctx }) => {
+    const allUsers = await ctx.db.query.users.findMany({
+      with: {
+        picks: {
+          with: {
+            game: true,
+          }
+        },
+      }
+    });
+
+    return allUsers;
+  }),
   getById: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
