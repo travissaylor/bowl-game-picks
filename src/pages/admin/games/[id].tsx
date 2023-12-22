@@ -42,7 +42,7 @@ import { PageHeader } from "~/components/orchestrated/page-header";
 export default function Game({
   game,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { status, data: sessionData } = useSession();
+  const { status } = useSession();
 
   const { mutateAsync } = api.game.update.useMutation();
   const form = useForm<UpdateGameSchema>({

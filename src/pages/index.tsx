@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { useMemo } from "react";
 import { PageHeader } from "~/components/orchestrated/page-header";
 import { Unauthenticated } from "~/components/orchestrated/unauthenticated";
 import {
@@ -11,7 +12,7 @@ import {
 } from "~/components/ui/card";
 
 import { api } from "~/utils/api";
-import { cn, formatDate } from "~/utils/ui";
+import { cn, formatDate, isNullOrUndefined } from "~/utils/ui";
 
 export default function Home() {
   const { status, data: sessionData } = useSession();
@@ -24,6 +25,40 @@ export default function Home() {
       enabled: !!sessionData?.user.id,
     },
   );
+
+  const record = useMemo(() => {
+    const record = {
+      wins: 0,
+      losses: 0,
+    };
+
+    if (!gamesQuery.data || !picksQuery.data) return record;
+
+    gamesQuery.data.forEach((game) => {
+      const pick = picksQuery.data?.find((pick) => pick.gameId === game.id);
+
+      if (!pick) return;
+
+      if (
+        game.status !== "final" ||
+        isNullOrUndefined(game.awayScore) ||
+        isNullOrUndefined(game.homeScore)
+      )
+        return;
+
+      if (
+        (pick.pick === "away" && game.awayScore > game.homeScore) ||
+        (pick.pick === "home" && game.homeScore > game.awayScore)
+      ) {
+        record.wins++;
+        return;
+      }
+
+      record.losses++;
+    });
+
+    return record;
+  }, [gamesQuery.data, picksQuery.data]);
 
   if (status === "unauthenticated") {
     return <Unauthenticated />;
@@ -48,7 +83,10 @@ export default function Home() {
       return "bg-yellow-100";
     }
 
-    if (game.awayScore && game.homeScore) {
+    if (
+      !isNullOrUndefined(game.awayScore) &&
+      !isNullOrUndefined(game.homeScore)
+    ) {
       if (pick.pick === "away" && game.awayScore > game.homeScore) {
         return "bg-green-100";
       }
@@ -67,7 +105,10 @@ export default function Home() {
     <>
       <Head>
         <title>Bowl Game Pick Results</title>
-        <meta name="description" content="See the updated scores for the bowl games and your picks." />
+        <meta
+          name="description"
+          content="See the updated scores for the bowl games and your picks."
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col justify-center">
@@ -76,13 +117,21 @@ export default function Home() {
           description="See the updated scores for the bowl games and your picks."
         />
         <div className="m-auto flex flex-col items-center justify-center p-4">
+          <h3 className="scroll-m-20 text-xl font-semibold tracking-tight">
+            Record: {record.wins} - {record.losses}
+          </h3>
+        </div>
+        <div className="m-auto flex flex-col items-center justify-center p-4">
           {gamesQuery.data.map((game) => {
             const pick = picksQuery.data?.find(
               (pick) => pick.gameId === game.id,
             );
 
             return (
-              <Card key={game.id} className={cn(cardColor(game, pick), "my-3 w-[400px]")}>
+              <Card
+                key={game.id}
+                className={cn(cardColor(game, pick), "my-3 w-[400px]")}
+              >
                 <CardHeader className="m-auto flex flex-col items-center justify-center">
                   <CardTitle>{game.name}</CardTitle>
                   <CardDescription>
@@ -90,13 +139,13 @@ export default function Home() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="m-auto flex flex-col items-center justify-center">
-                  <p className="text-md font-medium leading-none py-1">
+                  <p className="text-md py-1 font-medium leading-none">
                     {game.awayTeam} vs. {game.homeTeam}
                   </p>
                   {game.status === "final" &&
                   game.awayScore &&
                   game.homeScore ? (
-                    <p className="text-md font-medium leading-none py-1">
+                    <p className="text-md py-1 font-medium leading-none">
                       <span
                         className={
                           game.awayScore > game.homeScore ? "font-semibold" : ""
@@ -114,8 +163,10 @@ export default function Home() {
                       </span>
                     </p>
                   ) : null}
-                  { pick ? (
-                    <p className="text-md font-medium leading-none py-1">Your Pick: {game[`${pick.pick}Team`]}</p>
+                  {pick ? (
+                    <p className="text-md py-1 font-medium leading-none">
+                      Your Pick: {game[`${pick.pick}Team`]}
+                    </p>
                   ) : (
                     <p>Pick: TBD</p>
                   )}

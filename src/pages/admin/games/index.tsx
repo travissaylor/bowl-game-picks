@@ -13,10 +13,10 @@ import {
 } from "~/components/ui/card";
 
 import { api } from "~/utils/api";
-import { cn, formatDate } from "~/utils/ui";
+import { formatDate } from "~/utils/ui";
 
 export default function Home() {
-  const { status, data: sessionData } = useSession();
+  const { status } = useSession();
   const gamesQuery = api.game.getAll.useQuery();
 
   if (status === "unauthenticated") {
