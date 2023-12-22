@@ -63,29 +63,25 @@ export default function Home() {
   const gamesData = useMemo(() => {
     if (!gamesQuery.data) return [];
 
-      return gamesQuery.data.map((game) => {
-        const pick = picksQuery.data?.find((pick) => pick.gameId === game.id);
+    return gamesQuery.data.map((game) => {
+      const pick = picksQuery.data?.find((pick) => pick.gameId === game.id);
 
-        return {
-          ...game,
-          pick,
-        };
-      });
+      return {
+        ...game,
+        pick,
+      };
+    });
   }, [gamesQuery.data, picksQuery.data]);
 
   if (status === "unauthenticated") {
     return <Unauthenticated />;
   }
 
-  if (
-    gamesQuery.isError ||
-    picksQuery.isError
-  )
-    return <div>Error</div>;
+  if (gamesQuery.isError || picksQuery.isError) return <div>Error</div>;
 
   const cardColor = (
-    game: typeof gamesData[number],
-    pick: typeof gamesData[number]["pick"],
+    game: (typeof gamesData)[number],
+    pick: (typeof gamesData)[number]["pick"],
   ) => {
     if (!pick) return "bg-gray-100 dark:bg-gray-800";
 
@@ -151,8 +147,8 @@ export default function Home() {
                     {game.awayTeam} vs. {game.homeTeam}
                   </p>
                   {game.status === "final" &&
-                  game.awayScore &&
-                  game.homeScore ? (
+                  !isNullOrUndefined(game.awayScore) &&
+                  !isNullOrUndefined(game.homeScore) ? (
                     <p className="text-md py-1 font-medium leading-none">
                       <span
                         className={
@@ -176,7 +172,11 @@ export default function Home() {
                       Your Pick: {game[`${pick.pick}Team`]}
                     </p>
                   ) : (
-                    <p>Pick: TBD</p>
+                    <p>
+                      {game.status === "scheduled"
+                        ? "Pick: TBD"
+                        : "Missed Your Chance To Pick"}
+                    </p>
                   )}
                 </CardContent>
               </Card>
