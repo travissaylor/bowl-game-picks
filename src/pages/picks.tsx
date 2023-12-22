@@ -145,6 +145,7 @@ export default function Picks() {
                         <FormItem className="flex items-center justify-center">
                           <Select
                             {...form.register(`picks.${index}.pick`)}
+                            disabled={game.status !== "scheduled"}
                             value={field.pick}
                             onValueChange={(value) =>
                               update(index, {
@@ -155,7 +156,7 @@ export default function Picks() {
                           >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select Pick" />
+                                <SelectValue placeholder={game.status === "scheduled" ? "Select Pick" : "Game Has Started"} />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
