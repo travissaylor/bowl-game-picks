@@ -24,7 +24,7 @@ const formSchema = z.object({
     z.object({
       pickId: createPickSchema.shape.id.optional(),
       gameId: createPickSchema.shape.gameId,
-      pick: createPickSchema.shape.pick,
+      pick: createPickSchema.shape.pick.optional(),
     }),
   ),
 });
@@ -65,7 +65,6 @@ export default function Picks() {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     values: {
-      // @ts-expect-error Want to have non selected picks be undefined but can't use default values
       picks,
     },
   });
@@ -98,9 +97,11 @@ export default function Picks() {
       console.error("No user id");
       return;
     }
-    const submittedPicks = data.picks.map((field) => ({
+    const dataToSubmit = data.picks.filter((field) => field.pickId !== undefined);
+
+    const submittedPicks = dataToSubmit.map((field) => ({
       gameId: field.gameId,
-      pick: field.pick,
+      pick: field.pick!,
       userId: sessionData?.user.id,
       id: field.pickId,
     }));
